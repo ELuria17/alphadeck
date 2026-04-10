@@ -30,6 +30,31 @@
       --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
     }
 
+    body.light {
+      --bg: #f4f5f7;
+      --surf: #ffffff;
+      --surf2: #f0f1f4;
+      --surf3: #e4e6ed;
+      --border: #dde0ea;
+      --border2: #c8ccd8;
+      --accent: #5a9e00;
+      --accent-dim: rgba(90,158,0,.12);
+      --accent-glow: rgba(90,158,0,.2);
+      --text: #111827;
+      --text2: #4b5563;
+      --muted: #9ca3af;
+    }
+
+    body { transition: background .4s ease, color .4s ease; }
+
+    .theme-toggle {
+      background: var(--surf2); border: 1px solid var(--border2);
+      border-radius: 20px; padding: 4px 10px; cursor: pointer;
+      font-size: 14px; line-height: 1; color: var(--text2);
+      font-family: var(--font); transition: all .2s;
+    }
+    .theme-toggle:hover { border-color: var(--accent); color: var(--text); }
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -69,7 +94,8 @@
     /* ━━━━━ PAGE ━━━━━ */
     .page { max-width: 1200px; margin: 0 auto; padding: 20px 22px; }
     .tab-view { display: none; }
-    .tab-view.active { display: block; }
+    .tab-view.active { display: block; animation: tabFadeIn 1.2s ease forwards; }
+    @keyframes tabFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     /* ━━━━━ SEARCH ━━━━━ */
     .search-wrap { position: relative; max-width: 420px; margin-bottom: 20px; }
@@ -179,6 +205,8 @@
 
     /* ━━━━━ STOCK DETAIL ━━━━━ */
     #stockDetail { display: none; }
+    #stockDetail.visible { display: block; animation: tabFadeIn 1.2s ease forwards; }
+    #stockListView.hidden { display: none; }
     .back-btn {
       display: inline-flex; align-items: center; gap: 5px;
       border: none; background: transparent; color: var(--text2);
@@ -331,18 +359,54 @@
     .cmp-table .tk-col { font-weight: 700; font-size: 12px; }
 
     /* ━━━━━ LISTS TAB ━━━━━ */
+    .lists-header { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+    .btn-create-list { padding: 7px 16px; background: var(--accent); color: #070810; border: none; border-radius: 8px; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity .15s; }
+    .btn-create-list:hover { opacity: .85; }
     .lists-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 12px; }
     .list-card { background: var(--surf); border: 1px solid var(--border); border-radius: 12px; padding: 15px; cursor: pointer; transition: border-color .15s; }
     .list-card:hover { border-color: var(--accent); }
     .lc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
     .lc-name { font-size: 13px; font-weight: 800; }
     .lc-cnt { font-size: 10px; color: var(--muted); background: var(--surf3); padding: 2px 7px; border-radius: 10px; }
+    .lc-actions { display: flex; gap: 4px; align-items: center; }
+    .lc-icon-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; line-height: 1; padding: 2px 5px; border-radius: 4px; transition: color .15s, background .15s; }
+    .lc-icon-btn:hover { color: var(--text); background: var(--surf3); }
     .lc-tickers { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
     .ltk { background: var(--surf3); border-radius: 4px; padding: 2px 7px; font-size: 10.5px; font-weight: 700; color: var(--text2); }
     .lc-stat { font-size: 11px; color: var(--muted); }
     .lc-stat span { font-weight: 700; }
     .lc-stat span.pos { color: var(--green); }
     .lc-stat span.neg { color: var(--red); }
+
+    /* ━━━━━ LIST MODAL ━━━━━ */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 900; align-items: center; justify-content: center; }
+    .modal-box { background: var(--surf); border: 1px solid var(--border2); border-radius: 14px; padding: 24px; width: 440px; max-width: calc(100vw - 32px); max-height: 85vh; display: flex; flex-direction: column; gap: 14px; }
+    .modal-title { font-size: 15px; font-weight: 800; }
+    .modal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 5px; }
+    .modal-inp { width: 100%; padding: 8px 12px; background: var(--surf2); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-family: var(--font); font-size: 13px; outline: none; transition: border-color .15s; }
+    .modal-inp:focus { border-color: var(--accent); }
+    .modal-chips { display: flex; flex-wrap: wrap; gap: 5px; min-height: 28px; }
+    .modal-chip { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-dim); border: 1px solid var(--accent); color: var(--accent); border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+    .modal-chip button { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 12px; line-height: 1; padding: 0 0 0 2px; opacity: .7; }
+    .modal-chip button:hover { opacity: 1; }
+    .modal-stock-list { overflow-y: auto; max-height: 200px; border: 1px solid var(--border); border-radius: 7px; background: var(--surf2); }
+    .modal-stock-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; font-size: 12px; border-bottom: 1px solid var(--border); }
+    .modal-stock-item:last-child { border-bottom: none; }
+    .msi-info { display: flex; flex-direction: column; gap: 1px; }
+    .msi-tk { font-weight: 700; }
+    .msi-nm { font-size: 11px; color: var(--text2); }
+    .msi-add { padding: 3px 10px; background: var(--surf3); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-size: 11px; font-weight: 700; cursor: pointer; transition: all .15s; }
+    .msi-add:hover { border-color: var(--accent); color: var(--accent); }
+    .msi-add.added { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; }
+    .modal-btn { padding: 7px 18px; border-radius: 7px; border: none; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity .15s; }
+    .modal-btn.cancel { background: var(--surf3); color: var(--text2); }
+    .modal-btn.cancel:hover { opacity: .8; }
+    .modal-btn.save { background: var(--accent); color: #070810; }
+    .modal-btn.save:hover { opacity: .85; }
+    .modal-inp.error { border-color: var(--red); }
+    .modal-error { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
+    .modal-error.show { display: block; }
 
     /* ━━━━━ UTILS ━━━━━ */
     .divider { height: 1px; background: var(--border); margin: 14px 0; }
@@ -360,10 +424,6 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--border2); }
 
     /* ━━━━━ API KEY MODAL ━━━━━ */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.75);
-      z-index: 2000; display: flex; align-items: center; justify-content: center;
-    }
     .modal-box {
       background: var(--surf2); border: 1px solid var(--border2);
       border-radius: 16px; padding: 28px; max-width: 440px; width: 92%;
@@ -390,6 +450,116 @@
     .key-status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
     .key-status-dot.on  { background: var(--green); box-shadow: 0 0 5px var(--green); }
     .key-status-dot.off { background: var(--muted); }
+
+    /* ━━━━━ ANALYST REPORT MODAL ━━━━━ */
+    .report-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.72); z-index: 910;
+      align-items: flex-start; justify-content: center;
+      padding: 32px 16px; overflow-y: auto;
+    }
+    .report-box {
+      background: var(--surf); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 28px 32px;
+      width: 760px; max-width: calc(100vw - 32px);
+      position: relative; margin: auto;
+    }
+    .report-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px; margin-bottom: 20px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .report-ticker { font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--accent); margin-bottom: 4px; }
+    .report-headline { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+    .report-date { font-size: 11px; color: var(--muted); }
+    .report-close-btn {
+      background: var(--surf2); border: 1px solid var(--border2); border-radius: 8px;
+      padding: 6px 12px; cursor: pointer; color: var(--text2); font-family: var(--font);
+      font-size: 13px; font-weight: 600; flex-shrink: 0; transition: all .15s;
+    }
+    .report-close-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .report-loading {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 48px 0; gap: 14px;
+    }
+    .report-spinner {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 3px solid var(--border2); border-top-color: var(--accent);
+      animation: reportSpin .8s linear infinite;
+    }
+    @keyframes reportSpin { to { transform: rotate(360deg); } }
+    .report-loading-text { font-size: 13px; color: var(--text2); }
+    .report-section {
+      background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px 20px; margin-bottom: 14px;
+    }
+    .report-section-label {
+      font-size: 9px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .8px; color: var(--muted); margin-bottom: 4px;
+    }
+    .report-section-title { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
+    .report-section-body { font-size: 13px; color: var(--text2); line-height: 1.75; }
+    .report-section-body p { margin-bottom: 8px; }
+    .report-section-body p:last-child { margin-bottom: 0; }
+    .report-section-body strong { color: var(--text); font-weight: 700; }
+    .report-bull-bear { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    @media(max-width:580px) { .report-bull-bear { grid-template-columns: 1fr; } }
+    .report-bull-card {
+      background: var(--green-dim); border: 1px solid rgba(34,197,94,.25);
+      border-radius: 12px; padding: 16px;
+    }
+    .report-bear-card {
+      background: var(--red-dim); border: 1px solid rgba(244,63,94,.25);
+      border-radius: 12px; padding: 16px;
+    }
+    .report-bb-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+    .report-bull-card .report-bb-label { color: var(--green); }
+    .report-bear-card .report-bb-label { color: var(--red); }
+    .report-bb-scenario { font-size: 12.5px; font-weight: 700; margin-bottom: 8px; }
+    .report-bull-card .report-bb-scenario { color: var(--green); }
+    .report-bear-card .report-bb-scenario { color: var(--red); }
+    .report-bb-body { font-size: 12px; color: var(--text2); line-height: 1.6; }
+    .report-bb-body p { margin-bottom: 4px; }
+    .report-bb-target { margin-top: 10px; font-size: 20px; font-weight: 800; font-feature-settings: 'tnum'; }
+    .report-bull-card .report-bb-target { color: var(--green); }
+    .report-bear-card .report-bb-target { color: var(--red); }
+    .report-rating-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 10px; }
+    .report-rating-badge {
+      font-size: 22px; font-weight: 900; letter-spacing: -.5px;
+      padding: 8px 22px; border-radius: 10px;
+    }
+    .report-rating-badge.buy  { background: var(--green-dim); color: var(--green); border: 1.5px solid rgba(34,197,94,.3); }
+    .report-rating-badge.hold { background: var(--surf3); color: var(--text2); border: 1.5px solid var(--border2); }
+    .report-rating-badge.sell { background: var(--red-dim); color: var(--red); border: 1.5px solid rgba(244,63,94,.3); }
+    .report-pt-block { display: flex; flex-direction: column; gap: 2px; }
+    .report-pt-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .report-pt-value { font-size: 28px; font-weight: 800; color: var(--text); font-feature-settings: 'tnum'; }
+    .report-pt-upside { font-size: 12px; font-weight: 700; }
+    .report-pt-upside.pos { color: var(--green); }
+    .report-pt-upside.neg { color: var(--red); }
+    .report-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap; padding-top: 16px;
+      border-top: 1px solid var(--border); margin-top: 4px;
+    }
+    .report-disclaimer { font-size: 10px; color: var(--muted); line-height: 1.5; max-width: 480px; }
+    .report-copy-btn {
+      background: var(--surf2); border: 1px solid var(--border2); color: var(--text2);
+      padding: 7px 16px; border-radius: 7px; font-size: 12px; font-weight: 700;
+      cursor: pointer; font-family: var(--font); transition: all .15s; flex-shrink: 0;
+    }
+    .report-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ━━━━━ ANTHROPIC KEY MODAL ━━━━━ */
+    .anth-key-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.72);
+      z-index: 920; align-items: center; justify-content: center;
+    }
+    .anth-key-box {
+      background: var(--surf2); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 28px; max-width: 440px; width: 92%;
+    }
   </style>
 </head>
 <body>
@@ -401,8 +571,9 @@
   <button class="nav-btn" onclick="showTab('compare')">Compare</button>
   <button class="nav-btn" onclick="showTab('lists')">Lists</button>
   <div class="nav-right">
-    <span class="nav-badge">📅 Apr 7, 2026</span>
-    <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">☀️</button>
+    <span class="nav-badge" id="dateBadge">📅 —</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer" onclick="openKeyModal()">
       <span class="key-status-dot on" id="keyDot"></span>
       <span id="keyNavLabel">Live ✓</span>
     </span>
@@ -592,10 +763,106 @@
 
   <!-- ━━━━━━━━━━━━━━━━━━ LISTS TAB ━━━━━━━━━━━━━━━━━━ -->
   <div id="listsTab" class="tab-view">
+    <div class="lists-header">
+      <button class="btn-create-list" onclick="openListModal()">+ New List</button>
+    </div>
     <div class="lists-grid" id="listsGrid"></div>
   </div>
 </div><!-- /page -->
 
+<!-- ━━━━━━━━━━━━━━━━━━ LIST MODAL ━━━━━━━━━━━━━━━━━━ -->
+<div class="modal-overlay" id="listModal" onclick="if(event.target===this||event.target.id==='listModal')closeListModal()">
+  <div class="modal-box">
+    <div class="modal-title" id="listModalTitle">New List</div>
+
+    <div>
+      <div class="modal-label">List Name</div>
+      <input class="modal-inp" id="listModalName" placeholder="e.g. My Watchlist" oninput="this.classList.remove('error');document.getElementById('listModalError').classList.remove('show')" />
+      <div class="modal-error" id="listModalError">Please enter a list name.</div>
+    </div>
+
+    <div>
+      <div class="modal-label">Stocks in this list</div>
+      <div class="modal-chips" id="listModalChips"></div>
+    </div>
+
+    <div>
+      <div class="modal-label">Add Stocks</div>
+      <input class="modal-inp" id="listModalSearch" placeholder="Search ticker or name…" oninput="renderListModalResults()" />
+      <div class="modal-stock-list" id="listModalResults"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="modal-btn cancel" onclick="closeListModal()">Cancel</button>
+      <button type="button" class="modal-btn save" onclick="saveListFromModal()">Save List</button>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━ ANTHROPIC KEY MODAL ━━━━━━━━━━━━━━━━━━ -->
+<div class="anth-key-overlay" id="anthKeyModal" onclick="if(event.target===this)closeAnthKeyModal()">
+  <div class="anth-key-box">
+    <div class="modal-icon">🤖</div>
+    <div class="modal-title">Anthropic API Key Required</div>
+    <div class="modal-sub">To generate AI analyst reports, enter your Anthropic API key. It's stored locally in your browser and sent only to api.anthropic.com.</div>
+    <div class="modal-steps">
+      <div><span>1.</span> Go to <span style="color:var(--accent)">console.anthropic.com/account/keys</span></div>
+      <div><span>2.</span> Create a new key and paste it below</div>
+    </div>
+    <input id="anthKeyInp" placeholder="sk-ant-…" autocomplete="off"
+      style="width:100%;padding:9px 12px;background:var(--surf);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;font-family:monospace;outline:none;margin-bottom:8px;letter-spacing:.05em;"
+      onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'" />
+    <div id="anthKeyError" style="font-size:11px;color:var(--red);margin-bottom:10px;display:none"></div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeAnthKeyModal()">Cancel</button>
+      <button class="modal-btn save" onclick="saveAnthKey()">Save &amp; Generate</button>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━ FINNHUB KEY MODAL ━━━━━━━━━━━━━━━━━━ -->
+<div class="anth-key-overlay" id="fhKeyModal" onclick="if(event.target===this)closeKeyModal()">
+  <div class="anth-key-box">
+    <div class="modal-icon">📡</div>
+    <div class="modal-title">Finnhub API Key Required</div>
+    <div class="modal-sub">Live stock data is powered by Finnhub. Enter your free API key — it's stored locally and never leaves your browser.</div>
+    <div class="modal-steps">
+      <div><span>1.</span> Go to <span style="color:var(--accent)">finnhub.io/register</span></div>
+      <div><span>2.</span> Copy your API key from the dashboard and paste it below</div>
+    </div>
+    <input id="fhKeyInp" placeholder="your-finnhub-api-key" autocomplete="off"
+      style="width:100%;padding:9px 12px;background:var(--surf);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;font-family:monospace;outline:none;margin-bottom:8px;letter-spacing:.05em;"
+      onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'" />
+    <div id="fhKeyError" style="font-size:11px;color:var(--red);margin-bottom:10px;display:none"></div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeKeyModal()">Cancel</button>
+      <button class="modal-btn save" onclick="saveApiKey()">Save Key</button>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━ ANALYST REPORT MODAL ━━━━━━━━━━━━━━━━━━ -->
+<div class="report-overlay" id="reportModal" onclick="if(event.target===this)closeReportModal()">
+  <div class="report-box">
+    <div class="report-header">
+      <div>
+        <div class="report-ticker" id="reportTicker"></div>
+        <div class="report-headline" id="reportHeadline">Equity Analyst Report</div>
+        <div class="report-date" id="reportDate"></div>
+      </div>
+      <button class="report-close-btn" onclick="closeReportModal()">✕ Close</button>
+    </div>
+    <div class="report-loading" id="reportLoading">
+      <div class="report-spinner"></div>
+      <div class="report-loading-text">Generating analyst report with Claude AI…</div>
+    </div>
+    <div id="reportContent" style="display:none"></div>
+    <div class="report-footer" id="reportFooter" style="display:none">
+      <div class="report-disclaimer">AI-generated using Claude. Not financial advice. Price targets and estimates are speculative — always do your own research.</div>
+      <button class="report-copy-btn" onclick="copyReport()">⎘ Copy Report</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -925,7 +1192,7 @@ function sendToCompare(ticker) {
   setTimeout(renderCompareChart, 100);
 }
 
-const LISTS = [
+const DEFAULT_LISTS = [
   { name:'Magnificent 7', tickers:['AAPL','NVDA','TSLA','MSFT','AMZN','META','GOOGL'], avg1Y:'+2.4%', avgFwdPE:'28.1' },
   { name:'Big Tech', tickers:['AAPL','MSFT','GOOGL','META','AMZN'], avg1Y:'-2.0%', avgFwdPE:'23.2' },
   { name:'AI & Semis', tickers:['NVDA','MSFT','GOOGL','AMZN'], avg1Y:'-11.2%', avgFwdPE:'22.4' },
@@ -933,6 +1200,8 @@ const LISTS = [
   { name:'Defensive', tickers:['JPM','MSFT','AAPL'], avg1Y:'-1.0%', avgFwdPE:'20.8' },
   { name:'High Beta', tickers:['TSLA','NVDA','META'], avg1Y:'-21.5%', avgFwdPE:'36.9' },
 ];
+let LISTS = JSON.parse(localStorage.getItem('alphadeck_lists') || 'null') || DEFAULT_LISTS;
+function saveLists() { localStorage.setItem('alphadeck_lists', JSON.stringify(LISTS)); }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 //  SEEDED RNG + PRICE HISTORY
@@ -988,7 +1257,7 @@ function buildSyntheticHistory(ticker, m, P) {
 }
 
 function genLabels(days) {
-  const now = new Date(2026, 3, 7);
+  const now = new Date();
   const labels = [];
   for (let i = days; i >= 0; i--) {
     const d = new Date(now); d.setDate(d.getDate() - i);
@@ -1078,8 +1347,16 @@ function switchTF(btn) {
   document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const tf = btn.dataset.tf;
-  if (liveCache[activeTicker]) {
-    // Live stock: use cached data and slice to TF
+  if (tf === '1D') {
+    const cached = intradayCache[activeTicker];
+    if (cached) {
+      renderLiveChart(activeTicker, '1D', cached.timestamps, cached.closes);
+    } else {
+      fetchIntradayData(activeTicker).then(d => {
+        renderLiveChart(activeTicker, '1D', d.timestamps, d.closes);
+      });
+    }
+  } else if (liveCache[activeTicker]) {
     const d = liveCache[activeTicker];
     renderLiveChart(activeTicker, tf, d.timestamps, d.closes);
   } else {
@@ -1326,6 +1603,7 @@ function showDetail(ticker) {
         ${inListP ? '★ Saved' : '☆ Watchlist'}
       </button>
       <button onclick="sendToCompare('${ticker}')" class="action-btn">⊕ Compare</button>
+      <button onclick="openReportModal('${ticker}')" class="action-btn" style="color:var(--accent);border-color:var(--accent)">✦ AI Report</button>
     </div>`;
   document.getElementById('chartLabel').style.display = 'none';
   document.getElementById('dh-meta').innerHTML = `
@@ -1439,8 +1717,10 @@ function showDetail(ticker) {
   ).join('');
 
   // Show detail, hide list
-  document.getElementById('stockListView').style.display = 'none';
-  document.getElementById('stockDetail').style.display = 'block';
+  document.getElementById('stockListView').classList.add('hidden');
+  requestAnimationFrame(() => {
+    document.getElementById('stockDetail').classList.add('visible');
+  });
 
   // Render chart after show (needs visible canvas)
   setTimeout(() => renderStockChart(ticker, '1M'), 50);
@@ -1452,8 +1732,8 @@ function showDetail(ticker) {
 }
 
 function hideDetail() {
-  document.getElementById('stockDetail').style.display = 'none';
-  document.getElementById('stockListView').style.display = 'block';
+  document.getElementById('stockDetail').classList.remove('visible');
+  document.getElementById('stockListView').classList.remove('hidden');
   if (stockChart) { stockChart.destroy(); stockChart = null; }
   // Reset sections hidden for live stocks
   document.querySelector('.ec-card').style.display = '';
@@ -1472,7 +1752,7 @@ function showTab(tab) {
   document.querySelectorAll('.nav-btn').forEach(b => {
     if (b.textContent.toLowerCase().startsWith(tab.slice(0,4))) b.classList.add('active');
   });
-  if (tab === 'compare') { setTimeout(renderCompareChart, 50); }
+  if (tab === 'compare') { setTimeout(renderCompareChart, 1300); }
 }
 
 function showStocksView(view) {
@@ -1488,12 +1768,29 @@ function showStocksView(view) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 //  FINNHUB API KEY
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const FKEY = 'd7apokpr01qtpbh9dj60d7apokpr01qtpbh9dj6g';
+let FKEY = localStorage.getItem('alphadeck_fhkey') || 'd7apokpr01qtpbh9dj60d7apokpr01qtpbh9dj6g';
 const FH = 'https://finnhub.io/api/v1';
 
-function openKeyModal() {}
-function closeKeyModal() {}
-function saveApiKey() {}
+function openKeyModal() {
+  document.getElementById('fhKeyModal').style.display = 'flex';
+  document.getElementById('fhKeyInp').value = FKEY;
+  document.getElementById('fhKeyError').style.display = 'none';
+}
+function closeKeyModal() {
+  document.getElementById('fhKeyModal').style.display = 'none';
+}
+function saveApiKey() {
+  const val = document.getElementById('fhKeyInp').value.trim();
+  if (!val) {
+    document.getElementById('fhKeyError').textContent = 'Please enter your Finnhub API key.';
+    document.getElementById('fhKeyError').style.display = 'block';
+    return;
+  }
+  FKEY = val;
+  localStorage.setItem('alphadeck_fhkey', val);
+  closeKeyModal();
+  updateKeyIndicator();
+}
 function updateKeyIndicator() {
   const dot = document.getElementById('keyDot');
   const lbl = document.getElementById('keyNavLabel');
@@ -1622,6 +1919,49 @@ document.addEventListener('click', e => {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const liveCache = {};
 const liveChartCache = {};
+const intradayCache = {};
+
+async function fetchIntradayData(ticker) {
+  // Build today's market window in ET (9:30 AM – 4:00 PM)
+  const etNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const open = new Date(etNow); open.setHours(9, 30, 0, 0);
+  const close = new Date(etNow); close.setHours(16, 0, 0, 0);
+  const fromTs = Math.floor(open.getTime() / 1000);
+  const toTs   = Math.floor(Math.min(Date.now(), close.getTime()) / 1000);
+
+  const ctrl = new AbortController();
+  const tid  = setTimeout(() => ctrl.abort(), 12000);
+  try {
+    const r = await fetch(
+      `${FH}/stock/candle?symbol=${ticker}&resolution=30&from=${fromTs}&to=${toTs}&token=${FKEY}`,
+      { signal: ctrl.signal }
+    );
+    clearTimeout(tid);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    if (data.s !== 'ok' || !data.c?.length) throw new Error('No intraday data');
+    intradayCache[ticker] = { closes: data.c, timestamps: data.t };
+  } catch(e) {
+    clearTimeout(tid);
+    // Fall back to synthetic 30-min bars from current price
+    const price = liveCache[ticker]?.price || STOCKS[ticker]?.price || 100;
+    const bars = [];
+    const barts = [];
+    const rng = () => (Math.random() - 0.5) * 0.003;
+    let p = price * (1 - 0.008 + Math.random() * 0.006);
+    for (let i = 0; i <= 13; i++) {
+      const t = new Date(open); t.setMinutes(t.getMinutes() + i * 30);
+      if (t > new Date()) break;
+      p = p * (1 + rng());
+      bars.push(parseFloat(p.toFixed(2)));
+      barts.push(Math.floor(t.getTime() / 1000));
+    }
+    // Pin last bar to actual current price
+    if (bars.length) bars[bars.length - 1] = price;
+    intradayCache[ticker] = { closes: bars, timestamps: barts, isSynthetic: true };
+  }
+  return intradayCache[ticker];
+}
 
 function loadStock(ticker, hint) {
   if (STOCKS[ticker]) { showDetail(ticker); return; }
@@ -1632,8 +1972,8 @@ function loadStock(ticker, hint) {
 
 function showLiveSkeleton(ticker, hint) {
   activeTicker = ticker;  // set before fetch so the guard check passes on completion
-  document.getElementById('stockListView').style.display = 'none';
-  document.getElementById('stockDetail').style.display = 'block';
+  document.getElementById('stockListView').classList.add('hidden');
+  requestAnimationFrame(() => { document.getElementById('stockDetail').classList.add('visible'); });
   document.getElementById('dh-ticker').textContent = ticker;
   document.getElementById('dh-company').innerHTML = hint || '&nbsp;';
   document.getElementById('dh-price').textContent = '—';
@@ -1777,6 +2117,8 @@ async function fetchLiveStock(ticker) {
 
   } catch(e) {
     console.error('Finnhub fetch error:', ticker, e.message);
+    // Only update the detail UI if the user is currently viewing this ticker
+    if (activeTicker !== ticker) return;
     const isKeyErr = e.message.includes('Invalid API key') || e.message.includes('API key');
     document.getElementById('dh-company').textContent = ticker;
     document.getElementById('dh-price').textContent = '';
@@ -1810,6 +2152,7 @@ function showLiveDetail(ticker, d) {
         ${inList ? '★ Saved' : '☆ Watchlist'}
       </button>
       <button onclick="sendToCompare('${ticker}')" class="action-btn">⊕ Compare</button>
+      <button onclick="openReportModal('${ticker}')" class="action-btn" style="color:var(--accent);border-color:var(--accent)">✦ AI Report</button>
     </div>`;
 
   // Show/hide synthetic chart label
@@ -1888,8 +2231,8 @@ function showLiveDetail(ticker, d) {
   document.querySelector('.trade-card').style.display = 'none';
   document.querySelector('.articles-card').style.display = 'none';
 
-  document.getElementById('stockListView').style.display = 'none';
-  document.getElementById('stockDetail').style.display = 'block';
+  document.getElementById('stockListView').classList.add('hidden');
+  requestAnimationFrame(() => { document.getElementById('stockDetail').classList.add('visible'); });
 
   document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', b.dataset.tf === '1M'));
   setTimeout(() => renderLiveChart(ticker, '1M', d.timestamps, d.closes), 50);
@@ -1905,20 +2248,28 @@ function renderLiveChart(ticker, tf, ts, closes) {
   const isUp = closes[closes.length-1] >= closes[0];
   const color = isUp ? '#22c55e' : '#f43f5e';
 
-  const sliceMap = { '1D': 1, '1W': 5, '1M': 22, '3M': 65, '1Y': 252, '5Y': 1260 };
-  const n = sliceMap[tf] || closes.length;
-  const slicedCloses = closes.slice(Math.max(0, closes.length - n));
-  const slicedTs    = ts.slice(Math.max(0, ts.length - n));
+  let slicedCloses, slicedTs, displayLabels;
 
-  const labels = slicedTs.map(t => {
-    const d = new Date(t * 1000);
-    if (tf === '1D') return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-    if (['1W','1M'].includes(tf)) return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    return d.toLocaleDateString('en-US',{month:'short',year:'2-digit'});
-  });
-
-  const skip = Math.max(1, Math.floor(labels.length / 8));
-  const displayLabels = labels.map((l,i) => i % skip === 0 ? l : '');
+  if (tf === '1D') {
+    // Intraday: all bars are already 30-min; show every label
+    slicedCloses = closes;
+    slicedTs = ts;
+    displayLabels = slicedTs.map(t =>
+      new Date(t * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' })
+    );
+  } else {
+    const sliceMap = { '1W': 5, '1M': 22, '3M': 65, '1Y': 252, '5Y': 1260 };
+    const n = sliceMap[tf] || closes.length;
+    slicedCloses = closes.slice(Math.max(0, closes.length - n));
+    slicedTs     = ts.slice(Math.max(0, ts.length - n));
+    const labels = slicedTs.map(t => {
+      const d = new Date(t * 1000);
+      if (['1W','1M'].includes(tf)) return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      return d.toLocaleDateString('en-US',{month:'short',year:'2-digit'});
+    });
+    const skip = Math.max(1, Math.floor(labels.length / 8));
+    displayLabels = labels.map((l,i) => i % skip === 0 ? l : '');
+  }
 
   const ctx = document.getElementById('stockChart').getContext('2d');
   const grad = ctx.createLinearGradient(0, 0, 0, 220);
@@ -1956,16 +2307,23 @@ function renderLiveChart(ticker, tf, ts, closes) {
 //  LISTS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderLists() {
-  document.getElementById('listsGrid').innerHTML = LISTS.map(l => {
+  document.getElementById('listsGrid').innerHTML = LISTS.map((l, i) => {
     const pct = parseFloat(l.avg1Y);
-    const cls = pct >= 0 ? 'pos' : 'neg';
-    return `<div class="list-card" onclick="showListDetail('${l.name}')">
+    const cls = !isNaN(pct) ? (pct >= 0 ? 'pos' : 'neg') : '';
+    const statHtml = !isNaN(pct)
+      ? `<div class="lc-stat">1Y Avg: <span class="${cls}">${l.avg1Y}</span> &nbsp;·&nbsp; Fwd P/E: <span>${l.avgFwdPE}x</span></div>`
+      : `<div class="lc-stat">${l.tickers.length} stock${l.tickers.length !== 1 ? 's' : ''}</div>`;
+    return `<div class="list-card" onclick="showListDetail('${l.name.replace(/'/g,"\\'")}')">
       <div class="lc-top">
         <div class="lc-name">${l.name}</div>
-        <div class="lc-cnt">${l.tickers.length} stocks</div>
+        <div class="lc-actions">
+          <span class="lc-cnt">${l.tickers.length} stocks</span>
+          <button class="lc-icon-btn" title="Edit list" onclick="event.stopPropagation();openListModal(${i})">✎</button>
+          <button class="lc-icon-btn" title="Delete list" onclick="event.stopPropagation();deleteList(${i})">✕</button>
+        </div>
       </div>
       <div class="lc-tickers">${l.tickers.map(t => `<span class="ltk">${t}</span>`).join('')}</div>
-      <div class="lc-stat">1Y Avg: <span class="${cls}">${l.avg1Y}</span> &nbsp;·&nbsp; Fwd P/E: <span>${l.avgFwdPE}x</span></div>
+      ${statHtml}
     </div>`;
   }).join('');
 }
@@ -1973,7 +2331,6 @@ function renderLists() {
 function showListDetail(name) {
   const list = LISTS.find(l => l.name === name);
   if (!list) return;
-  // Switch to compare tab with these tickers
   cmpTickers = list.tickers.slice(0, 6);
   showTab('compare');
   renderCompareChips();
@@ -1981,15 +2338,456 @@ function showListDetail(name) {
   setTimeout(renderCompareChart, 100);
 }
 
+function deleteList(idx) {
+  if (!confirm(`Delete "${LISTS[idx].name}"?`)) return;
+  LISTS.splice(idx, 1);
+  saveLists();
+  renderLists();
+}
+
+// ━━━━ LIST MODAL ━━━━
+let _modalEditIdx = null;
+let _modalTickers = [];
+
+function openListModal(editIdx = null) {
+  _modalEditIdx = editIdx;
+  _modalTickers = editIdx !== null ? [...LISTS[editIdx].tickers] : [];
+  document.getElementById('listModalTitle').textContent = editIdx !== null ? 'Edit List' : 'New List';
+  document.getElementById('listModalName').value = editIdx !== null ? LISTS[editIdx].name : '';
+  document.getElementById('listModalName').classList.remove('error');
+  document.getElementById('listModalError').classList.remove('show');
+  document.getElementById('listModalSearch').value = '';
+  renderListModalChips();
+  renderListModalResults();
+  const el = document.getElementById('listModal');
+  el.style.display = 'flex';
+  document.getElementById('listModalName').focus();
+}
+
+function closeListModal() {
+  document.getElementById('listModal').style.display = 'none';
+  showTab('lists');
+}
+
+function renderListModalChips() {
+  document.getElementById('listModalChips').innerHTML = _modalTickers.map(t =>
+    `<span class="modal-chip">${t}<button type="button" onclick="listModalRemoveTicker('${t}')">×</button></span>`
+  ).join('') || '<span style="font-size:11px;color:var(--muted)">No stocks added yet</span>';
+}
+
+function listModalRemoveTicker(t) {
+  _modalTickers = _modalTickers.filter(x => x !== t);
+  renderListModalChips();
+  renderListModalResults();
+}
+
+function renderListModalResults() {
+  const q = document.getElementById('listModalSearch').value.trim().toUpperCase();
+  const all = Object.keys(STOCKS);
+  const filtered = q
+    ? all.filter(tk => tk.includes(q) || STOCKS[tk].name.toUpperCase().includes(q)).slice(0, 20)
+    : all.slice(0, 20);
+
+  let html = filtered.map(tk => {
+    const added = _modalTickers.includes(tk);
+    return `<div class="modal-stock-item">
+      <div class="msi-info"><div class="msi-tk">${tk}</div><div class="msi-nm">${STOCKS[tk].name}</div></div>
+      <button type="button" class="msi-add ${added ? 'added' : ''}" onclick="listModalToggleTicker('${tk}')">
+        ${added ? '✓ Added' : '+ Add'}
+      </button>
+    </div>`;
+  }).join('');
+
+  // If typed query looks like a ticker and isn't already in the preloaded list, offer to add it manually
+  if (q && q.length <= 10 && !STOCKS[q] && !_modalTickers.includes(q)) {
+    const isExact = filtered.some(tk => tk === q);
+    if (!isExact) {
+      html += `<div class="modal-stock-item" style="border-top:1px solid var(--border2)">
+        <div class="msi-info"><div class="msi-tk">${q}</div><div class="msi-nm" style="color:var(--muted)">Custom ticker</div></div>
+        <button type="button" class="msi-add" onclick="listModalToggleTicker('${q}')">+ Add</button>
+      </div>`;
+    }
+  }
+
+  document.getElementById('listModalResults').innerHTML = html || '<div style="padding:12px;font-size:12px;color:var(--muted)">No results</div>';
+}
+
+function listModalToggleTicker(tk) {
+  if (_modalTickers.includes(tk)) {
+    _modalTickers = _modalTickers.filter(x => x !== tk);
+  } else {
+    _modalTickers.push(tk);
+  }
+  renderListModalChips();
+  renderListModalResults();
+}
+
+function saveListFromModal() {
+  const name = document.getElementById('listModalName').value.trim();
+  if (!name) {
+    const inp = document.getElementById('listModalName');
+    inp.classList.add('error');
+    document.getElementById('listModalError').classList.add('show');
+    inp.focus();
+    return;
+  }
+  const entry = { name, tickers: _modalTickers, avg1Y: 'n/a', avgFwdPE: 'n/a' };
+  if (_modalEditIdx !== null) {
+    LISTS[_modalEditIdx] = entry;
+  } else {
+    LISTS.push(entry);
+  }
+  saveLists();
+  renderLists();
+  closeListModal();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('listModal').style.display === 'flex') closeListModal();
+  if (document.getElementById('reportModal').style.display === 'flex') closeReportModal();
+  if (document.getElementById('anthKeyModal').style.display === 'flex') closeAnthKeyModal();
+  if (document.getElementById('fhKeyModal').style.display === 'flex') closeKeyModal();
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  EQUITY ANALYST REPORT (AI)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let _reportTicker = null;
+let _reportPlainText = '';
+
+function getAnthKey() { return localStorage.getItem('alphadeck_anthropic_key') || ''; }
+
+function saveAnthKey() {
+  const val = document.getElementById('anthKeyInp').value.trim();
+  const errEl = document.getElementById('anthKeyError');
+  if (!val.startsWith('sk-ant-') || val.length < 20) {
+    errEl.textContent = 'Key must start with "sk-ant-" and be at least 20 characters.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  localStorage.setItem('alphadeck_anthropic_key', val);
+  closeAnthKeyModal();
+  if (_reportTicker) openReportModal(_reportTicker);
+}
+
+function closeAnthKeyModal() { document.getElementById('anthKeyModal').style.display = 'none'; }
+
+function openReportModal(ticker) {
+  _reportTicker = ticker;
+  const stockData = liveCache[ticker] || STOCKS[ticker] || {};
+  const name = stockData.name || ticker;
+  document.getElementById('reportTicker').textContent = `${ticker} · Equity Research`;
+  document.getElementById('reportHeadline').textContent = `${name} — Analyst Report`;
+  document.getElementById('reportDate').textContent =
+    new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  if (!getAnthKey()) {
+    document.getElementById('anthKeyModal').style.display = 'flex';
+    document.getElementById('anthKeyInp').value = '';
+    document.getElementById('anthKeyError').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('reportLoading').style.display = 'flex';
+  document.getElementById('reportContent').style.display = 'none';
+  document.getElementById('reportFooter').style.display = 'none';
+  document.getElementById('reportModal').style.display = 'flex';
+  generateReport(ticker);
+}
+
+function closeReportModal() {
+  document.getElementById('reportModal').style.display = 'none';
+  _reportTicker = null;
+}
+
+async function generateReport(ticker) {
+  const apiKey = getAnthKey();
+  if (!apiKey) return;
+
+  const showErr = (msg, showKeyBtn) => {
+    document.getElementById('reportLoading').style.display = 'none';
+    document.getElementById('reportContent').innerHTML = `
+      <div style="padding:32px;text-align:center">
+        <div style="font-size:24px;margin-bottom:10px">⚠️</div>
+        <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:12px">${msg}</div>
+        ${showKeyBtn ? `<button onclick="closeReportModal();document.getElementById('anthKeyModal').style.display='flex';document.getElementById('anthKeyInp').value=''" style="background:var(--accent);color:#070810;border:none;padding:8px 18px;border-radius:7px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:13px">Update API Key</button>` : `<button onclick="generateReport('${ticker}')" style="background:var(--surf2);color:var(--text2);border:1px solid var(--border2);padding:8px 18px;border-radius:7px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:13px">Try Again</button>`}
+      </div>`;
+    document.getElementById('reportContent').style.display = 'block';
+  };
+
+  try {
+    const stockData = liveCache[ticker] || STOCKS[ticker];
+    if (!stockData) throw new Error(`No data available for ${ticker}`);
+    const extra  = await fetchFinnhubReportData(ticker);
+    const prompt = buildReportPrompt(ticker, stockData, extra);
+
+    const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const claudeUrl = isLocal ? '/api/claude' : 'https://api.anthropic.com/v1/messages';
+    const claudeBody = isLocal
+      ? { api_key: apiKey, model: 'claude-haiku-4-5-20251001', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] }
+      : { model: 'claude-haiku-4-5-20251001', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] };
+    const claudeHeaders = { 'content-type': 'application/json', 'anthropic-version': '2023-06-01' };
+    if (!isLocal) {
+      claudeHeaders['x-api-key'] = apiKey;
+      claudeHeaders['anthropic-dangerous-direct-browser-calls'] = 'true';
+    }
+
+    const resp = await fetch(claudeUrl, {
+      method: 'POST',
+      headers: claudeHeaders,
+      body: JSON.stringify(claudeBody),
+    });
+
+    if (!resp.ok) {
+      const errBody = await resp.json().catch(() => ({}));
+      if (resp.status === 401 || resp.status === 403) {
+        localStorage.removeItem('alphadeck_anthropic_key');
+        showErr('Invalid Anthropic API key.', true);
+        return;
+      }
+      throw new Error(errBody.error?.message || `API error ${resp.status}`);
+    }
+
+    const data    = await resp.json();
+    const rawText = data.content?.[0]?.text || '';
+    if (!rawText) throw new Error('Empty response from Claude.');
+    _reportPlainText = rawText;
+    renderReportHTML(parseReportSections(rawText), stockData, extra);
+
+  } catch(err) {
+    console.error('[AlphaDeck] Report error:', err);
+    showErr(err.message, false);
+  }
+}
+
+function parseReportSections(text) {
+  const keys = ['THE SETUP','WHAT TO WATCH','THE ESTIMATE','GUIDANCE EXPECTATIONS','BULL CASE','BEAR CASE','POSITIONING AND SENTIMENT','RATING AND PRICE TARGET'];
+  const sections = {};
+  for (let i = 0; i < keys.length; i++) {
+    const tag = `[SECTION: ${keys[i]}]`, next = keys[i+1] ? `[SECTION: ${keys[i+1]}]` : null;
+    const start = text.indexOf(tag);
+    if (start === -1) { sections[keys[i]] = ''; continue; }
+    const from = start + tag.length;
+    const to = next ? (text.indexOf(next, from) === -1 ? text.length : text.indexOf(next, from)) : text.length;
+    sections[keys[i]] = text.slice(from, to).trim();
+  }
+  sections._bullTarget  = (sections['BULL CASE']?.match(/bull case.*?price target[:\s]+\$?([\d,.]+)/i) || [])[1] || null;
+  sections._bearTarget  = (sections['BEAR CASE']?.match(/bear case.*?price target[:\s]+\$?([\d,.]+)/i) || [])[1] || null;
+  sections._rating      = ((sections['RATING AND PRICE TARGET']?.match(/\b(buy|hold|sell)\b/i) || [])[1] || 'hold').toLowerCase();
+  sections._priceTarget = (sections['RATING AND PRICE TARGET']?.match(/(?:12[- ]month )?price target[:\s]+\$?([\d,.]+)/i) || [])[1] || null;
+  return sections;
+}
+
+function renderReportHTML(sections, stockData, extra) {
+  const price = stockData.price;
+  function esc(t) { return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>'); }
+  function bodyHTML(text) { return (text||'').split(/\n+/).filter(p=>p.trim()).map(p=>`<p>${esc(p)}</p>`).join(''); }
+  function card(lbl,title,text) { return `<div class="report-section"><div class="report-section-label">${lbl}</div><div class="report-section-title">${title}</div><div class="report-section-body">${bodyHTML(text)}</div></div>`; }
+
+  const bullBody = (sections['BULL CASE']||'').replace(/bull case.*?price target.*$/im,'').trim();
+  const bearBody = (sections['BEAR CASE']||'').replace(/bear case.*?price target.*$/im,'').trim();
+  const rCls = sections._rating, rLbl = rCls.charAt(0).toUpperCase()+rCls.slice(1);
+  let ptUpside = '';
+  if (sections._priceTarget && price) {
+    const pt = parseFloat(String(sections._priceTarget).replace(',','')), pct = ((pt-price)/price*100).toFixed(1);
+    ptUpside = `<div class="report-pt-upside ${pt>=price?'pos':'neg'}">${pt>=price?'+':''}${pct}% vs $${price.toFixed(2)}</div>`;
+  }
+  const rec = extra.recommendations;
+  const recHTML = rec ? `<div style="font-size:12px;color:var(--text2);margin-top:8px">Analyst votes: <strong style="color:var(--green)">${rec.strongBuy+rec.buy} Buy</strong> · <strong style="color:var(--text2)">${rec.hold} Hold</strong> · <strong style="color:var(--red)">${rec.sell+rec.strongSell} Sell</strong></div>` : '';
+
+  document.getElementById('reportContent').innerHTML = `
+    ${card('01 · Setup','The Setup',sections['THE SETUP'])}
+    ${card('02 · Key Metrics','What to Watch',sections['WHAT TO WATCH'])}
+    ${card('03 · Estimates','The Estimate',sections['THE ESTIMATE'])}
+    ${card('04 · Management','Guidance Expectations',sections['GUIDANCE EXPECTATIONS'])}
+    <div class="report-bull-bear">
+      <div class="report-bull-card">
+        <div class="report-bb-label">05a · Upside</div>
+        <div class="report-bb-scenario">Bull Case — Beat &amp; Raise</div>
+        <div class="report-bb-body">${bodyHTML(bullBody)}</div>
+        ${sections._bullTarget?`<div class="report-bb-target">$${sections._bullTarget}</div>`:''}
+      </div>
+      <div class="report-bear-card">
+        <div class="report-bb-label">05b · Downside</div>
+        <div class="report-bb-scenario">Bear Case — Miss &amp; Lower</div>
+        <div class="report-bb-body">${bodyHTML(bearBody)}</div>
+        ${sections._bearTarget?`<div class="report-bb-target">$${sections._bearTarget}</div>`:''}
+      </div>
+    </div>
+    <div class="report-section">
+      <div class="report-section-label">06 · Positioning &amp; Sentiment</div>
+      <div class="report-section-title">Positioning / Sentiment Context</div>
+      <div class="report-section-body">${bodyHTML(sections['POSITIONING AND SENTIMENT'])}</div>
+      ${recHTML}
+    </div>
+    <div class="report-section">
+      <div class="report-section-label">07 · Our View</div>
+      <div class="report-section-title">Rating &amp; Price Target</div>
+      <div class="report-rating-row">
+        <div class="report-rating-badge ${rCls}">${rLbl}</div>
+        ${sections._priceTarget?`<div class="report-pt-block"><div class="report-pt-label">12-Month Price Target</div><div class="report-pt-value">$${sections._priceTarget}</div>${ptUpside}</div>`:''}
+      </div>
+      <div class="report-section-body">${bodyHTML(sections['RATING AND PRICE TARGET'])}</div>
+    </div>`;
+  document.getElementById('reportLoading').style.display = 'none';
+  document.getElementById('reportContent').style.display = 'block';
+  document.getElementById('reportFooter').style.display = 'flex';
+}
+
+function copyReport() {
+  if (!_reportPlainText) return;
+  navigator.clipboard.writeText(_reportPlainText).then(() => {
+    const btn = document.querySelector('.report-copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!'; btn.style.color = 'var(--green)'; btn.style.borderColor = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
+  }).catch(() => alert('Copy failed — select and copy manually.'));
+}
+
+async function fetchFinnhubReportData(ticker) {
+  const [recRes, ptRes] = await Promise.allSettled([
+    fetch(`${FH}/stock/recommendation?symbol=${ticker}&token=${FKEY}`).then(r => r.json()),
+    fetch(`${FH}/stock/price-target?symbol=${ticker}&token=${FKEY}`).then(r => r.json()),
+  ]);
+  const rec = (recRes.status === 'fulfilled' && Array.isArray(recRes.value) && recRes.value.length)
+    ? recRes.value[0] : null;
+  const pt  = (ptRes.status === 'fulfilled' && ptRes.value?.targetMean)
+    ? ptRes.value : null;
+  return {
+    recommendations: rec ? {
+      buy: rec.buy || 0, hold: rec.hold || 0, sell: rec.sell || 0,
+      strongBuy: rec.strongBuy || 0, strongSell: rec.strongSell || 0, period: rec.period || ''
+    } : null,
+    priceTarget: pt ? { mean: pt.targetMean, high: pt.targetHigh, low: pt.targetLow, count: pt.numberOfAnalysts } : null,
+  };
+}
+
+function buildReportPrompt(ticker, s, extra) {
+  const ne = s.nextEarnings || {};
+  const lq = s.latestQ || {};
+  const rec = extra.recommendations;
+  const pt  = extra.priceTarget;
+
+  const recStr = rec
+    ? `Strong Buy: ${rec.strongBuy}, Buy: ${rec.buy}, Hold: ${rec.hold}, Sell: ${rec.sell}, Strong Sell: ${rec.strongSell} (${rec.period})`
+    : 'Not available';
+  const ptStr = pt
+    ? `Mean: $${pt.mean?.toFixed(2)}, High: $${pt.high?.toFixed(2)}, Low: $${pt.low?.toFixed(2)} (${pt.count} analysts)`
+    : 'Not available';
+  const lqStr = lq.quarter
+    ? `${lq.quarter} (${lq.date}): EPS $${lq.epsA?.toFixed(2)} vs est. $${lq.epsE?.toFixed(2)}, Rev ${lq.revA} vs est. ${lq.revE}. Guidance: ${lq.guidance}`
+    : 'Not available';
+
+  return `You are a senior equity research analyst at a top-tier institutional investment bank. Write a professional pre-earnings analyst report for ${s.name || ticker} (${ticker}).
+
+Today's date: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+Sector: ${s.sector || 'N/A'}
+
+MARKET DATA:
+Current Price: $${s.price?.toFixed?.(2) ?? s.price ?? 'N/A'}
+52-Week Range: $${s.week52L} – $${s.week52H}
+1-Month Return: ${s.change1M}% | 1-Year Return: ${s.change1Y}%
+Market Cap: ${s.marketCap} | P/E (TTM): ${s.pe}x | Forward P/E: ${s.forwardPE}x
+EPS (TTM): ${s.eps} | Revenue (TTM): ${s.revenue}
+Gross Margin: ${s.grossMargin} | Operating Margin: ${s.opMargin}
+Net Income: ${s.netIncome} | FCF: ${s.fcf} | Debt/Equity: ${s.debtEq}
+Beta: ${s.beta} | Dividend Yield: ${s.divYield}
+
+NEXT EARNINGS: ${ne.date || 'Unknown'} (${ne.daysOut ?? '?'} days out)
+Consensus EPS Est: ${ne.epsEst || '—'} | Consensus Rev Est: ${ne.revEst || '—'}
+
+LAST QUARTER: ${lqStr}
+
+ANALYST CONSENSUS: ${recStr}
+PRICE TARGETS: ${ptStr}
+
+Write the report in exactly seven sections using these exact markers (no other text before the first marker):
+
+[SECTION: THE SETUP]
+Discuss consensus EPS/revenue estimates heading into earnings, the stock's 1-month price performance vs. the ${s.sector || 'sector'} sector, and current P/E and Forward P/E vs. the company's 5-year historical average and key sector peers. Be specific with numbers.
+
+[SECTION: WHAT TO WATCH]
+Identify 2–3 specific KPIs or business metrics that will drive the market's reaction this quarter. Include one company-specific growth theme and one or two macro tailwinds/headwinds relevant to ${s.sector || 'this sector'}.
+
+[SECTION: THE ESTIMATE]
+State your specific estimates for revenue, gross margin, and EPS vs. consensus. Explain concisely where and why you diverge from the Street, or confirm alignment. Reference specific line items if relevant.
+
+[SECTION: GUIDANCE EXPECTATIONS]
+Describe what management is likely to say on the call — guidance ranges for next quarter and full year, tone, and whether the bar for a guidance raise is currently high or low given the recent setup.
+
+[SECTION: BULL CASE]
+Describe the beat-and-raise scenario with specific metrics that would need to beat. End the section with exactly this format on its own line: Bull case 12-month price target: $XX
+
+[SECTION: BEAR CASE]
+Describe the miss-and-lower scenario with specific disappointments. End the section with exactly this format on its own line: Bear case 12-month price target: $XX
+
+[SECTION: POSITIONING AND SENTIMENT]
+Cover short interest (use training knowledge, mark as est. if uncertain), options implied earnings move (estimate based on beta/history), current investor positioning/sentiment, and summarize the analyst consensus: ${recStr}.
+
+[SECTION: RATING AND PRICE TARGET]
+State your rating (Buy, Hold, or Sell), your 12-month price target with a one-sentence rationale tied to a specific multiple or DCF assumption. Note where your target sits vs. the Finnhub analyst consensus of ${ptStr}. Begin with your rating word (e.g. "Buy —") so it is easy to parse.`;
+}
+
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 //  INIT
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function updateDateBadge() {
+  const now = new Date();
+  document.getElementById('dateBadge').textContent = '📅 ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function scheduleMarketCloseRefresh() {
+  const etNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const close = new Date(etNow);
+  close.setHours(16, 0, 0, 0);
+  if (etNow >= close) close.setDate(close.getDate() + 1);
+  const msUntilClose = close - etNow;
+  setTimeout(() => {
+    updateDateBadge();
+    // Clear caches so fresh data is fetched
+    Object.keys(liveCache).forEach(k => delete liveCache[k]);
+    Object.keys(liveChartCache).forEach(k => delete liveChartCache[k]);
+    Object.keys(intradayCache).forEach(k => delete intradayCache[k]);
+    refreshWatchlistData();
+    scheduleMarketCloseRefresh();
+  }, msUntilClose);
+}
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  BACKGROUND DATA REFRESH
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function refreshWatchlistData() {
+  // Stagger requests by 700ms each to stay within Finnhub free-tier rate limits
+  for (const ticker of WATCHLIST) {
+    try { await fetchLiveStock(ticker); } catch(e) { /* silent */ }
+    await new Promise(r => setTimeout(r, 700));
+  }
+}
+
+updateDateBadge();
+scheduleMarketCloseRefresh();
+
+function toggleTheme() {
+  const light = document.body.classList.toggle('light');
+  document.getElementById('themeToggle').textContent = light ? '🌙' : '☀️';
+  localStorage.setItem('alphadeck_theme', light ? 'light' : 'dark');
+}
+// Restore saved theme
+if (localStorage.getItem('alphadeck_theme') === 'light') {
+  document.body.classList.add('light');
+  document.getElementById('themeToggle').textContent = '🌙';
+}
+
 renderStocksTable();
 renderEarningsCal();
 renderCompareChips();
 renderCmpTable();
 renderLists();
+showTab('stocks');
 showStocksView('watchlist');
+updateKeyIndicator();
+refreshWatchlistData();
 </script>
 </body>
 </html>
